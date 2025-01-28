@@ -153,33 +153,42 @@ class PromptController extends Controller
         return $category->id;
     }
 
+
+    // New search for proper filter
     public function search(Request $request)
     {
-        // Get filters from the request
+        // Initialize the query
         $query = Prompt::query();
 
+        // Search by keywords
         if ($request->has('keywords') && $request->keywords != '') {
-            $query->where('prompt_text', 'like', '%' . $request->keywords . '%')
-                  ->orWhere('topic', 'like', '%' . $request->keywords . '%')
-                  ->orWhere('tags', 'like', '%' . $request->keywords . '%');
+            $query->where(function ($subQuery) use ($request) {
+                $subQuery->where('prompt_text', 'like', '%' . $request->keywords . '%')
+                        ->orWhere('topic', 'like', '%' . $request->keywords . '%')
+                        ->orWhere('tags', 'like', '%' . $request->keywords . '%');
+            });
         }
 
+        // Filter by category
         if ($request->has('category') && $request->category != '') {
             $query->where('category_id', $request->category);
         }
 
+        // Filter by language
         if ($request->has('language') && $request->language != '') {
             $query->where('language', $request->language);
         }
 
+        // Filter by rating
         if ($request->has('rating') && $request->rating != '') {
             $query->where('rating', '>=', $request->rating);
         }
 
+        // Sort by user selection
         if ($request->has('sort_by') && $request->sort_by != '') {
             switch ($request->sort_by) {
                 case 'popular':
-                    $query->orderBy('usage_count', 'desc'); // Assume usage_count tracks popularity
+                    $query->orderBy('usage_count', 'desc'); // Assuming usage_count tracks popularity
                     break;
                 case 'highest_rated':
                     $query->orderBy('rating', 'desc');
@@ -196,6 +205,11 @@ class PromptController extends Controller
         // Fetch additional data for filters
         $categories = Category::all();
 
-        return view('prompts.search', compact('prompts', 'categories', 'request'));
+        // Fetch Languages
+        $languages = Language::all();
+
+        // Pass the original request to retain filter selections
+        return view('prompts.search', compact('prompts', 'categories','languages', 'request'));
     }
+
 }
