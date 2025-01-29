@@ -5,7 +5,7 @@
                 <div class="bg-secondary rounded h-100 p-4">
                     <form method="GET" action="{{ route('prompts.search') }}">
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <input type="text" name="keywords" class="form-control" placeholder="Search by keywords" value="{{ request('keywords') }}">
                             </div>
                             <div class="col-md-2">
@@ -14,6 +14,16 @@
                                     @foreach($categories as $category)
                                         <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>
                                             {{ $category->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <select name="tags[]" id="tags" class="form-control" multiple>
+                                    <option value="">Select Tag(s)</option>
+                                    @foreach($tags as $tag)
+                                        <option value="{{ $tag->name }}" {{ in_array($tag->name, request('tags', [])) ? 'selected' : '' }}>
+                                            {{ $tag->name }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -35,7 +45,7 @@
                                     <option value="newest" {{ request('sort_by') == 'newest' ? 'selected' : '' }}>Newest</option>
                                 </select>
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-1">
                                 <button type="submit" class="btn btn-primary">Search</button>
                             </div>
                         </div>
@@ -62,8 +72,12 @@
                     @forelse($prompts as $prompt)
                         <tr>
                             <td>{{ $prompt->topic }}</td>
-                            <td>{{ $prompt->prompt_text }}</td>
-                            <td>{{ $prompt->tags }}</td>
+                            <td>
+                                <textarea >{{ $prompt->prompt_text }}</textarea>
+                                </td>
+                            <td>
+                                {{ implode(', ', array_column($prompt->toArray()['tags'], 'name')) }}
+                            </td>
                             <td>{{ $prompt->category->name ?? 'N/A' }}</td>
                             <td>{{ $prompt->language }}</td>
                             <td>{{ $prompt->rating }}</td>

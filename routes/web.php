@@ -5,6 +5,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\PromptController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AdminCategoryController;
+use App\Http\Controllers\Admin\AdminTagController;
 use App\Http\Middleware\Admin;
 
 Route::get('/', function () {
@@ -26,6 +27,7 @@ Route::middleware(['auth', Admin::class])->prefix('admin')->name('admin.')->grou
 
     Route::resource('/users', AdminUserController::class);
     Route::resource('/categories', AdminCategoryController::class);
+    Route::resource('/tags', AdminTagController::class);
     Route::resource('/prompts', PromptController::class);
     Route::get('prompts/upload/create', [PromptController::class, 'uploadCSVcreateForm'])->name('prompts.upload.create');
     Route::post('prompts/upload', [PromptController::class, 'uploadCSV'])->name('prompts.upload');

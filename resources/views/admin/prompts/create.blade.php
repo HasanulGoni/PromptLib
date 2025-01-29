@@ -17,8 +17,16 @@
                         </div>
                         <div class="mb-3">
                             <label for="tags" class="form-label">Tags</label>
-                            <textarea class="form-control" placeholder="Write Tags with comma. i.e, Music, AI, Health"
-                                    id="tags" name="tags" style="height: 50px;"></textarea>
+                            <select name="tags[]" id="tags" class="form-select mb-3" multiple>
+                                @if(isset($tags)) {{-- Use this if you're passing existing tags for edit --}}
+                                    @foreach($tags as $tag)
+                                        <option value="{{ $tag->name }}" 
+                                            >
+                                            {{ $tag->name }}
+                                        </option>
+                                    @endforeach
+                                @endif
+                            </select>
                         </div>
                         <div class="mb-3">
                             <label for="category_id" class="form-label">Category</label>

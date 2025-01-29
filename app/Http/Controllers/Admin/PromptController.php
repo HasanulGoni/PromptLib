@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
+use App\Models\Tag;
+use App\Models\Prompt;
 use App\Models\Category;
 use App\Models\Language;
-use App\Models\Prompt;
 use Illuminate\Http\Request;
 
-use Illuminate\Support\Facades\Validator;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 
 class PromptController extends Controller
@@ -28,7 +29,8 @@ class PromptController extends Controller
     {
         $categories = Category::all();
         $languages = Language::all();
-        return view('admin.prompts.create', compact('categories','languages'));
+        $tags = Tag::all();
+        return view('admin.prompts.create', compact('categories','languages','tags'));
     }
     // Store a new prompt
     public function store(Request $request)
@@ -36,13 +38,20 @@ class PromptController extends Controller
         $request->validate([
             'topic' => 'required|string|max:255',
             'prompt_text' => 'required|string',
-            'tags' => 'nullable|string',
+            'tags' => 'nullable|array',
+            'tags.*' => 'string|max:255',
             'category_id' => 'required|exists:categories,id',
-            'language' => 'nullable|string|max:255',
+            'language' => 'nullable|string|max:255|exists:languages,language_name',
             'status' => 'required|in:active,inactive,under_review',
         ]);
 
-        Prompt::create($request->all());
+        $prompt = Prompt::create($request->except('tags'));
+        // Prompt::create($request->all());
+
+        if ($request->has('tags')) {
+            $tagIds = $this->syncTags($request->tags);
+            $prompt->tags()->sync($tagIds);
+        }
 
         return redirect()->route('admin.prompts.index')->with('success', 'Prompt created successfully.');
     }
@@ -52,7 +61,10 @@ class PromptController extends Controller
     {
         $categories = Category::all();
         $languages = Language::all();
-        return view('admin.prompts.edit', compact('prompt', 'categories','languages'));
+        $tags = Tag::all();
+        $prompt->load('tags');
+        // dd($prompt->toArray()['tags']);
+        return view('admin.prompts.edit', compact('prompt', 'categories','languages','tags'));
     }
 
     // Show an existing prompt
@@ -61,7 +73,9 @@ class PromptController extends Controller
         // dd($prompt->category->name);
         $categories = Category::all();
         $languages = Language::all();
-        return view('admin.prompts.show', compact('prompt', 'categories','languages'));
+        $tags = Tag::all();
+        $prompt->load('tags');
+        return view('admin.prompts.show', compact('prompt', 'categories','languages', 'tags'));
     }
 
     // Update an existing prompt
@@ -70,13 +84,19 @@ class PromptController extends Controller
         $request->validate([
             'topic' => 'required|string|max:255',
             'prompt_text' => 'required|string',
-            'tags' => 'nullable|string',
+            'tags' => 'nullable|array',
+            'tags.*' => 'string|max:255',
             'category_id' => 'required|exists:categories,id',
-            'language' => 'nullable|string|max:255',
+            'language' => 'nullable|string|max:255|exists:languages,language_name',
             'status' => 'required|in:active,inactive,under_review',
         ]);
 
-        $prompt->update($request->all());
+        $prompt->update($request->except('tags'));
+
+        if ($request->has('tags')) {
+            $tagIds = $this->syncTags($request->tags);
+            $prompt->tags()->sync($tagIds);
+        }
 
         return redirect()->route('admin.prompts.index')->with('success', 'Prompt updated successfully.');
     }
@@ -112,6 +132,7 @@ class PromptController extends Controller
 
         // Process each row
         $prompts = [];
+        $insertCount = 0;
         foreach ($csvData as $row) {
             $row = array_combine($headers, $row); // Map headers to values
             $validator = Validator::make($row, [
@@ -128,23 +149,29 @@ class PromptController extends Controller
                 continue;
             }
 
-            // Add to batch insert array
-            $prompts[] = [
+            // Get or create category
+            $categoryId = $this->getCategoryId($row['category']);
+
+            // Create the prompt
+            $prompt = Prompt::create([
                 'topic' => $row['topic'],
                 'prompt_text' => $row['prompt'],
-                'tags' => $row['tags'],
-                'category_id' => $this->getCategoryId($row['category']), // Get or create category
+                'category_id' => $categoryId,
                 'language' => $row['language'],
                 'status' => $row['status'],
-                'created_at' => now(),
-                'updated_at' => now(),
-            ];
+            ]);
+            $insertCount++;
+                    // Sync tags
+            if (!empty($row['tags'])) {
+                $tagIds = $this->syncTags(explode(',', $row['tags']));
+                $prompt->tags()->sync($tagIds);
+            }
         }
 
         // Insert prompts in bulk
-        Prompt::insert($prompts);
+        // Prompt::insert($prompts);
 
-        return redirect()->back()->with('success', count($prompts) . ' prompts uploaded successfully.');
+        return redirect()->back()->with('success', $insertCount . ' prompts uploaded successfully.');
     }
 
     private function getCategoryId($categoryName)
@@ -166,6 +193,13 @@ class PromptController extends Controller
                 $subQuery->where('prompt_text', 'like', '%' . $request->keywords . '%')
                         ->orWhere('topic', 'like', '%' . $request->keywords . '%')
                         ->orWhere('tags', 'like', '%' . $request->keywords . '%');
+            });
+        }
+
+        // Search by tags
+        if ($request->has('tags') && !empty($request->tags)) {
+            $query->whereHas('tags', function ($subQuery) use ($request) {
+                $subQuery->whereIn('name', $request->tags);
             });
         }
 
@@ -200,16 +234,25 @@ class PromptController extends Controller
         }
 
         // Paginate results
-        $prompts = $query->with('category')->paginate(10);
-
+        $prompts = $query->with('category','tags')->paginate(10);
+        // dd($prompts[0]->relations);
+        // dd($prompts[0]->toArray()['tags']);
         // Fetch additional data for filters
         $categories = Category::all();
 
         // Fetch Languages
         $languages = Language::all();
 
+        $tags = Tag::all();
         // Pass the original request to retain filter selections
-        return view('prompts.search', compact('prompts', 'categories','languages', 'request'));
+        return view('prompts.search', compact('prompts', 'categories','languages', 'tags', 'request'));
     }
 
+    // Helper Method for Syncing Tags
+    private function syncTags($tags)
+    {
+        return collect($tags)->map(function ($tagName) {
+            return Tag::firstOrCreate(['name' => $tagName])->id;
+        });
+    }
 }

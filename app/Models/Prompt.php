@@ -2,8 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Tag;
+
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Prompt extends Model
 {
@@ -23,5 +26,10 @@ class Prompt extends Model
     public function savedByUsers()
     {
         return $this->belongsToMany(User::class, 'prompt_user');
+    }
+
+    public function tags():BelongsToMany
+    {
+        return $this->belongsToMany(Tag::class, 'prompt_tag', 'prompt_id', 'tag_id');
     }
 }

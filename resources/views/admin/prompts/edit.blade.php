@@ -18,8 +18,16 @@
                         </div>
                         <div class="mb-3">
                             <label for="tags" class="form-label">Tags</label>
-                            <textarea class="form-control" placeholder="Write Tags with comma. i.e, Music, AI, Health"
-                                    id="tags" name="tags" style="height: 50px;">{{ $prompt->tags}}</textarea>
+                            <select name="tags[]" id="tags" class="form-control" multiple>
+                                @if(isset($tags)) {{-- Use this if you're passing existing tags for edit --}}
+                                    @foreach($tags as $tag)
+                                        <option value="{{ $tag->name }}" 
+                                            {{ isset($prompt) && collect($prompt->toArray()['tags'])->contains('name', $tag->name) ? 'selected' : '' }}>
+                                            {{ $tag->name }}
+                                        </option>
+                                    @endforeach
+                                @endif
+                            </select>
                         </div>
                         <div class="mb-3">
                             <label for="category_id" class="form-label">Category</label>
@@ -52,7 +60,7 @@
 
                         </div>
                         
-                        <button type="submit" class="btn btn-primary">Create</button>
+                        <button type="submit" class="btn btn-primary">Update</button>
                     </form>
                 </div>
             </div>
