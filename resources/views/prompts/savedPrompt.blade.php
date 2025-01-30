@@ -3,7 +3,7 @@
         <div class="row g-4">
             <div class="col-sm-12">
                 <div class="bg-secondary rounded h-100 p-4">
-                    <form method="GET" action="{{ route('prompts.search') }}">
+                    <form method="GET" action="{{ route('prompts.savedPrompt') }}">
                         <div class="row">
                             <div class="col-md-3">
                                 <input type="text" name="keywords" class="form-control" placeholder="Search by keywords" value="{{ request('keywords') }}">

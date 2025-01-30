@@ -191,8 +191,7 @@ class PromptController extends Controller
         if ($request->has('keywords') && $request->keywords != '') {
             $query->where(function ($subQuery) use ($request) {
                 $subQuery->where('prompt_text', 'like', '%' . $request->keywords . '%')
-                        ->orWhere('topic', 'like', '%' . $request->keywords . '%')
-                        ->orWhere('tags', 'like', '%' . $request->keywords . '%');
+                        ->orWhere('topic', 'like', '%' . $request->keywords . '%');
             });
         }
 
