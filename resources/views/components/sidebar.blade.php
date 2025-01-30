@@ -16,22 +16,17 @@
         </div>
         <div class="navbar-nav w-100">
             <a href="{{ route('dashboard')}}" class="nav-item nav-link {{ request()->is('dashboard') ? 'active':'' }}"><i class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
-            <div class="nav-item dropdown">
-                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-laptop me-2"></i>Elements</a>
-                <div class="dropdown-menu bg-transparent border-0">
-                    <a href="" class="dropdown-item">Buttons</a>
-                    <a href="" class="dropdown-item">Typography</a>
-                    <a href="" class="dropdown-item">Other Elements</a>
-                </div>
-            </div>
-            <a href="{{ route('admin.categories.index') }}" class="nav-item nav-link {{ request()->is('admin/categories*') ? 'active':'' }}"><i class="fa fa-table me-2"></i>Category</a>
-            <a href="{{ route('admin.tags.index') }}" class="nav-item nav-link {{ request()->is('admin/tags*') ? 'active':'' }}"><i class="fa fa-table me-2"></i>Tag</a>
-            <a href="{{ route('admin.users.index') }}" class="nav-item nav-link {{ request()->is('admin/users*') ? 'active':'' }}"><i class="fa fa-id-card me-2"></i>User</a>
-            <a href="{{ route('admin.prompts.index') }}" class="nav-item nav-link {{ request()->is('admin/prompts*') ? 'active':'' }}"><i class="fa fa-th me-2"></i>Prompts</a>
+            @if (Auth::user()->role === 'admin')
+                <a href="{{ route('admin.categories.index') }}" class="nav-item nav-link {{ request()->is('admin/categories*') ? 'active':'' }}"><i class="fa fa-table me-2"></i>Category</a>
+                <a href="{{ route('admin.tags.index') }}" class="nav-item nav-link {{ request()->is('admin/tags*') ? 'active':'' }}"><i class="fa fa-table me-2"></i>Tag</a>
+                <a href="{{ route('admin.users.index') }}" class="nav-item nav-link {{ request()->is('admin/users*') ? 'active':'' }}"><i class="fa fa-id-card me-2"></i>User</a>
+                <a href="{{ route('admin.prompts.index') }}" class="nav-item nav-link {{ request()->is('admin/prompts*') ? 'active':'' }}"><i class="fa fa-th me-2"></i>Prompts</a>
+            @endif
+
             <a href="{{ route('prompts.search') }}" class="nav-item nav-link {{ request()->is('prompts/search*') ? 'active':'' }}"><i class="fa fa-th me-2"></i>Prompt Search</a>
-            <a href="form.html" class="nav-item nav-link"><i class="fa fa-keyboard me-2"></i>Forms</a>
-            
-            <a href="chart.html" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Charts</a>
+            <a href="{{ route('prompts.saved') }}" class="nav-item nav-link"><i class="fa fa-keyboard me-2"></i>Saved Prompt</a>
+            <a href="{{ route('prompts.reported') }}" class="nav-item nav-link"><i class="fa fa-keyboard me-2"></i>Reported Prompt</a>
+
            
         </div>
     </nav>
