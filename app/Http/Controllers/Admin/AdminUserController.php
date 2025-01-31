@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Prompt;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules;
+use App\Http\Controllers\Controller;
+use App\Models\Category;
+use App\Models\Tag;
 use Illuminate\Support\Facades\Hash;
 
 class AdminUserController extends Controller
@@ -92,5 +95,18 @@ class AdminUserController extends Controller
         $user->delete();
         return redirect()->route('admin.users.index')->with('success', 'User deleted successfully.');
 
+    }
+
+    public function dashboard(){
+        $userTotal = User::where('role','user')->count();
+        $categoryTotal = Category::count();
+        $tagTotal = Tag::count();
+        $totalPrompt = Prompt::count();
+        $totalActivePrompts = Prompt::where('status', 'active')->count();
+        $totalInactivePrompt = Prompt::where('status', 'inactive')->count();
+        $totalUnderReviewPrompt = Prompt::where('status', 'under_review')->count();
+        
+
+        return view('dashboard', compact('userTotal','totalPrompt','totalActivePrompts','totalInactivePrompt','totalUnderReviewPrompt','categoryTotal','tagTotal'));
     }
 }

@@ -14,9 +14,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [AdminUserController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('prompts/savedPrompt', [UserDashboardController::class, 'savedPrompt'])->name('prompts.savedPrompt');
 Route::get('prompts/reportedPrompt', [UserDashboardController::class, 'reportedPrompt'])->name('prompts.reportedPrompt');
