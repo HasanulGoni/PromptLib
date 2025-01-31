@@ -29,6 +29,9 @@
 
     <!-- Template Stylesheet -->
     <link href="{{asset('css/style.css')}}" rel="stylesheet">
+    
+    <!-- This will inject page-specific CSS -->
+    @stack('styles') 
 </head>
 
 <body>

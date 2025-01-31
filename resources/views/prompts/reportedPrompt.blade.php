@@ -7,26 +7,30 @@
                     <tr>
                         <th>Topic</th>
                         <th>Prompt</th>
-                        <th>Tags</th>
+                        
                         <th>Category</th>
                         <th>Language</th>
                         <th>Rating</th>
+                        <th>Reason</th>
+                        <th>Reported On</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse($prompts as $prompt)
+                    @forelse($reportedPrompts as $report)
                        
-                        <tr onclick="window.location='{{ route('prompts.show', $prompt) }}';" style="cursor: pointer;">
-                            <td>{{ $prompt->topic }}</td>
+                        <tr onclick="window.location='{{ route('prompts.show', $report->prompt) }}';" style="cursor: pointer;">
+                            <td>{{ $report->prompt->topic }}</td>
                             <td>
-                                <textarea >{{ $prompt->prompt_text }}</textarea>
+                                <textarea >{{ $report->prompt->prompt_text }}</textarea>
                                 </td>
+                            
+                            <td>{{ $report->prompt->category->name ?? 'N/A' }}</td>
+                            <td>{{ $report->prompt->language }}</td>
+                            <td>{{ $report->prompt->rating }}</td>
                             <td>
-                                {{ implode(', ', array_column($prompt->toArray()['tags'], 'name')) }}
+                                {{ $report->reason }}
                             </td>
-                            <td>{{ $prompt->category->name ?? 'N/A' }}</td>
-                            <td>{{ $prompt->language }}</td>
-                            <td>{{ $prompt->rating }}</td>
+                            <td>{{ $report->created_at->diffForHumans() }}</td>
                         </tr>
                         
                     @empty
@@ -37,7 +41,7 @@
                 </tbody>
             </table>
         
-            {{ $prompts->links() }}
+            {{ $reportedPrompts->links() }}
         </div>
     </div>
 

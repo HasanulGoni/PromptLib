@@ -1,0 +1,17 @@
+.star-rating {
+    display: inline-block;
+    font-size: 20px;
+    position: relative;
+}
+.star-rating::before {
+    content: '★★★★★'; /* 5 stars */
+    color: #ccc; /* Empty stars */
+}
+.star-rating span {
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    color: gold;
+}

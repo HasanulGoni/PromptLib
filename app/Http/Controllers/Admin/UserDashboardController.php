@@ -63,11 +63,13 @@ class UserDashboardController extends Controller
         // dd($prompts);
         return view('prompts.savedPrompt', compact('prompts', 'categories','languages', 'tags', 'request'));
     }
+
     public function reportedPrompt() {
         
         $user = Auth::user();
-        $prompts = $user->reportedPrompts()->paginate(10);
-        return view('prompts.reportedPrompt', compact('prompts'));
+        $reportedPrompts = $user->reportedPrompts()->paginate(10);
+        // dd($prompts->prompt);
+        return view('prompts.reportedPrompt', compact('reportedPrompts'));
     }
     
 

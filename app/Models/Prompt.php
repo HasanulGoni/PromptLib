@@ -23,6 +23,11 @@ class Prompt extends Model
         return $this->hasMany(Review::class);
     }
 
+    // public function calculateAverageRating()
+    // {
+    //     return $this->reviews()->avg('rating') ?? 0; // Returns 0 if no reviews exist
+    // }
+
     public function savedByUsers()
     {
         return $this->belongsToMany(User::class, 'prompt_user');
