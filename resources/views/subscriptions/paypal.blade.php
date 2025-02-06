@@ -37,14 +37,14 @@
                     </div>
                 </div>
 
-                <div class="card mt-3">
+                {{-- <div class="card mt-3 mt-3">
                     @if(auth()->user()->isPremium())
-                        <form action="{{ route('subscriptions.cancel') }}" method="POST">
+                        <form action="{{ route('subscriptions.paypal.cancel') }}" method="POST">
                             @csrf
                             <button type="submit" class="btn btn-danger">Cancel Subscription</button>
                         </form>
                     @endif
-                </div>
+                </div> --}}
             </div>
         </div>
     </div>
