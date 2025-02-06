@@ -62,6 +62,10 @@ class User extends Authenticatable
         return $this->hasOne(Subscription::class);
     }
 
+    public function isPremium()
+    {
+        return $this->subscription && $this->subscription->plan === 'premium' && $this->subscription->expires_at > now();
+    }
 
     public function reportedPrompts()
     {

@@ -1,7 +1,7 @@
 <x-app-layout>
     @push('styles')
     <link rel="stylesheet" href="{{ asset('css/rating.css') }}">
-@endpush
+    @endpush
     <div class="container-fluid pt-4 px-4">
         <div class="bg-secondary rounded h-100 p-4">
             <h2 class="mb-2">Prompt Details</h2>
@@ -50,9 +50,22 @@
 
                 </div>
                 <div>
-                    <textarea name="" id="" class="form-control bg-white">{{ $prompt->prompt_text }}
+                    <form action="{{ route('prompts.sendToAI') }}" method="POST" class="mb-4">
+                        @csrf
+                    <label class="text-info" for="custom_prompt">You Can The Customize Prompt Before Send To AI (Optional):</label>
+                    <textarea name="custom_prompt" id="custom_prompt" class="form-control bg-white">{{ $prompt->prompt_text }}
                     </textarea>
-                    
+                    <button type="submit" class="btn btn-primary mt-2">Send to AI</button>
+                    </form>
+                    {{-- Send To AI Model --}}
+                   
+
+                    @if (session('ai_response'))
+                        <h5>AI Response:</h5>
+                        <pre><p style="white-space: pre-wrap; word-wrap: break-word; overflow-wrap: break-word;">{{ session('ai_response') }}</p></pre>
+                    @endif
+
+
                     {{-- Review --}}
                     <div class="mt-4">
                         <h6>Submit Your Review</h6>
@@ -114,6 +127,16 @@
         
         
     </div>
+    @push('script')
+        <script>
+                $(document).ready(function () {
+                // Form submission event
+                $('form').on('submit', function () {
+                    $('#spinner').addClass('show'); // Show the spinner when the request starts
+                });
+            });
+        </script>
+    @endpush
 
     
 </x-app-layout>

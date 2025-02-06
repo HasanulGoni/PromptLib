@@ -26,6 +26,7 @@
             <a href="{{ route('prompts.search') }}" class="nav-item nav-link {{ request()->is('prompts/search*') ? 'active':'' }}"><i class="fa fa-search me-2"></i>Prompt Search</a>
             <a href="{{ route('prompts.savedPrompt') }}" class="nav-item nav-link {{ request()->is('prompts/savedPrompt*') ? 'active':'' }}"><i class="fa fa-heart me-2"></i>Saved Prompt</a>
             <a href="{{ route('prompts.reportedPrompt') }}" class="nav-item nav-link {{ request()->is('prompts/reportedPrompt*') ? 'active':'' }}"><i class="fa fa-flag me-2"></i>Reported Prompt</a>
+            <a href="{{ route('subscriptions.paypal.plans') }}" class="nav-item nav-link {{ request()->is('subscriptions*') ? 'active':'' }}"><i class="fa fa-user-check me-2"></i>Membership</a>
 
            
         </div>

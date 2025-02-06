@@ -3,12 +3,14 @@
 use App\Http\Middleware\Admin;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Admin\AIController;
 use App\Http\Controllers\Admin\PromptController;
 use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\AdminTagController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AdminCategoryController;
 use App\Http\Controllers\Admin\UserDashboardController;
+use App\Http\Controllers\Admin\PayPalSubscriptionController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -38,6 +40,9 @@ Route::middleware('auth')->group(function () {
     Route::post('prompts/{prompt}/save', [UserDashboardController::class, 'savePrompt'])->name('prompts.save');
     Route::post('prompts/{prompt}/remove', [UserDashboardController::class, 'removePrompt'])->name('prompts.remove');
 
+    // AI integration
+    Route::post('prompts/send-to-ai', [AIController::class, 'sendToAI'])->name('prompts.sendToAI');
+
     // Report Prompt
 
     Route::post('prompts/{prompt}/report', [UserDashboardController::class, 'reportPrompt'])->name('prompts.report');
@@ -46,6 +51,13 @@ Route::middleware('auth')->group(function () {
     Route::post('prompts/{prompt}/review', [ReviewController::class, 'store'])->name('prompts.review');
     Route::delete('reviews/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
 
+
+    // Paypal
+    Route::get('subscriptions/paypal', [PayPalSubscriptionController::class, 'showPlans'])->name('subscriptions.paypal.plans');
+    Route::post('subscriptions/paypal/create', [PayPalSubscriptionController::class, 'createPayment'])->name('subscriptions.paypal.create');
+    Route::get('subscriptions/paypal/success', [PayPalSubscriptionController::class, 'success'])->name('subscriptions.paypal.success');
+    Route::get('subscriptions/paypal/cancel', [PayPalSubscriptionController::class, 'cancel'])->name('subscriptions.paypal.cancel');
+    
 });
 
 Route::middleware(['auth', Admin::class])->prefix('admin')->name('admin.')->group(function () {
