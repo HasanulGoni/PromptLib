@@ -13,7 +13,7 @@ use App\Http\Controllers\Admin\UserDashboardController;
 use App\Http\Controllers\Admin\PayPalSubscriptionController;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('dashboard');
 });
 
 Route::get('/dashboard', [AdminUserController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
