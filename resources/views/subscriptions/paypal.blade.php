@@ -39,8 +39,13 @@
                 <div class="card mt-3 bg-aliceblue">
                     <div class="card-body">
                         <h4 class="text-info">Current Subscription Plan</h3>
-                        <p class="text-dark mb-0 text-capitalize fs-3">{{ Auth::user()->subscription->plan }}</p>
-                            <p class="fa">Expair Date: {{ Auth::user()->subscription->expires_at }}</p>
+                            @if (Auth::user()->subscription)
+                            <p class="text-dark mb-0 text-capitalize fs-3">{{ Auth::user()->subscription->plan }}</p>
+                            <p>Expair Date: {{ Auth::user()->subscription->expires_at }}</p>
+                            @else
+                                <p>Free</p>
+                            @endif
+                        
                     </div>
                 </div>
                 {{-- <div class="card mt-3 mt-3">
