@@ -22,6 +22,7 @@
                             <label for="password">Password</label>
                         </div>
                         <button type="submit" class="btn btn-primary py-3 w-100 mb-4">Log In</button>
+                        <p class="text-center mb-0">Forgot Password? <a href="{{route('password.request')}}">Reset Password</a></p>
                         <p class="text-center mb-0">Don't have an Account? <a href="{{route('register')}}">Sign Up</a></p>
                     </form>
                 </div>
