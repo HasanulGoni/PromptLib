@@ -13,7 +13,7 @@ use App\Http\Controllers\Admin\UserDashboardController;
 use App\Http\Controllers\Admin\PayPalSubscriptionController;
 
 Route::get('/', function () {
-    return redirect('dashboard');
+    return redirect()->route('prompts.search');
 });
 
 Route::get('/dashboard', [AdminUserController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
@@ -68,6 +68,8 @@ Route::middleware(['auth', Admin::class])->prefix('admin')->name('admin.')->grou
     Route::resource('/prompts', PromptController::class);
     Route::get('prompts/upload/create', [PromptController::class, 'uploadCSVcreateForm'])->name('prompts.upload.create');
     Route::post('prompts/upload', [PromptController::class, 'uploadCSV'])->name('prompts.upload');
+
+    Route::get('/statistics', [AdminUserController::class, 'statistics'])->name('statistics');
 
 
 

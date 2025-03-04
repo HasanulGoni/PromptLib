@@ -15,8 +15,9 @@
             </div>
         </div>
         <div class="navbar-nav w-100">
-            <a href="{{ route('dashboard')}}" class="nav-item nav-link {{ request()->is('dashboard') ? 'active':'' }}"><i class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
+            {{-- <a href="{{ route('dashboard')}}" class="nav-item nav-link {{ request()->is('dashboard') ? 'active':'' }}"><i class="fa fa-tachometer-alt me-2"></i>Dashboard</a> --}}
             @if (Auth::user()->role === 'admin')
+                <a href="{{ route('admin.statistics')}}" class="nav-item nav-link {{ request()->is('dashboard') ? 'active':'' }}"><i class="fa fa-tachometer-alt me-2"></i>Statistics</a>
                 <a href="{{ route('admin.categories.index') }}" class="nav-item nav-link {{ request()->is('admin/categories*') ? 'active':'' }}"><i class="fa fa-table me-2"></i>Category</a>
                 <a href="{{ route('admin.tags.index') }}" class="nav-item nav-link {{ request()->is('admin/tags*') ? 'active':'' }}"><i class="fa fa-tags me-2"></i>Tag</a>
                 <a href="{{ route('admin.users.index') }}" class="nav-item nav-link {{ request()->is('admin/users*') ? 'active':'' }}"><i class="fa fa-id-card me-2"></i>User</a>

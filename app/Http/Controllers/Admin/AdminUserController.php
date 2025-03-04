@@ -109,4 +109,16 @@ class AdminUserController extends Controller
 
         return view('dashboard', compact('userTotal','totalPrompt','totalActivePrompts','totalInactivePrompt','totalUnderReviewPrompt','categoryTotal','tagTotal'));
     }
+    public function statistics(){
+        $userTotal = User::where('role','user')->count();
+        $categoryTotal = Category::count();
+        $tagTotal = Tag::count();
+        $totalPrompt = Prompt::count();
+        $totalActivePrompts = Prompt::where('status', 'active')->count();
+        $totalInactivePrompt = Prompt::where('status', 'inactive')->count();
+        $totalUnderReviewPrompt = Prompt::where('status', 'under_review')->count();
+        
+
+        return view('dashboard', compact('userTotal','totalPrompt','totalActivePrompts','totalInactivePrompt','totalUnderReviewPrompt','categoryTotal','tagTotal'));
+    }
 }
