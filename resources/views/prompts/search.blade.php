@@ -74,7 +74,7 @@
                         <tr onclick="window.location='{{ route('prompts.show', $prompt) }}';" style="cursor: pointer;">
                             <td>{{ $prompt->topic }}</td>
                             <td>
-                                <textarea >{{ $prompt->prompt_text }}</textarea>
+                                <textarea onclick="event.stopPropagation();" >{{ $prompt->prompt_text }}</textarea>
                                 </td>
                             <td>
                                 {{ implode(', ', array_column($prompt->toArray()['tags'], 'name')) }}
