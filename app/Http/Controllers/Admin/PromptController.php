@@ -28,9 +28,9 @@ class PromptController extends Controller
     public function create()
     {
         $categories = Category::all();
-        $languages = Language::all();
+        // $languages = Language::all();
         $tags = Tag::all();
-        return view('admin.prompts.create', compact('categories','languages','tags'));
+        return view('admin.prompts.create', compact('categories','tags'));
     }
     // Store a new prompt
     public function store(Request $request)
@@ -41,7 +41,7 @@ class PromptController extends Controller
             'tags' => 'nullable|array',
             'tags.*' => 'string|max:255',
             'category_id' => 'required|exists:categories,id',
-            'language' => 'nullable|string|max:255|exists:languages,language_name',
+            
             'status' => 'required|in:active,inactive,under_review',
         ]);
 
@@ -60,11 +60,11 @@ class PromptController extends Controller
     public function edit(Prompt $prompt)
     {
         $categories = Category::all();
-        $languages = Language::all();
+        // $languages = Language::all();
         $tags = Tag::all();
         $prompt->load('tags');
         // dd($prompt->toArray()['tags']);
-        return view('admin.prompts.edit', compact('prompt', 'categories','languages','tags'));
+        return view('admin.prompts.edit', compact('prompt', 'categories','tags'));
     }
 
     // Show an existing prompt
@@ -72,10 +72,10 @@ class PromptController extends Controller
     {
         // dd($prompt->category->name);
         $categories = Category::all();
-        $languages = Language::all();
+        // $languages = Language::all();
         $tags = Tag::all();
         $prompt->load('tags');
-        return view('admin.prompts.show', compact('prompt', 'categories','languages', 'tags'));
+        return view('admin.prompts.show', compact('prompt', 'categories', 'tags'));
     }
 
     // Update an existing prompt
@@ -87,7 +87,7 @@ class PromptController extends Controller
             'tags' => 'nullable|array',
             'tags.*' => 'string|max:255',
             'category_id' => 'required|exists:categories,id',
-            'language' => 'nullable|string|max:255|exists:languages,language_name',
+            
             'status' => 'required|in:active,inactive,under_review',
         ]);
 
@@ -125,7 +125,7 @@ class PromptController extends Controller
         $headers = array_map('strtolower', array_shift($csvData)); // Extract headers
 
         // Validate headers (optional)
-        $requiredHeaders = ['topic', 'prompt', 'tags', 'category', 'language', 'status'];
+        $requiredHeaders = ['topic', 'prompt', 'tags', 'category', 'status'];
         if (array_diff($requiredHeaders, $headers)) {
             return redirect()->back()->withErrors(['error' => 'Invalid CSV headers.']);
         }
@@ -140,7 +140,7 @@ class PromptController extends Controller
                 'prompt' => 'required|string',
                 'tags' => 'nullable|string',
                 'category' => 'required|string|max:255',
-                'language' => 'nullable|string|max:255|exists:languages,language_name',
+                
                 'status' => 'required|in:active,inactive,under_review',
             ]);
 
@@ -157,7 +157,6 @@ class PromptController extends Controller
                 'topic' => $row['topic'],
                 'prompt_text' => $row['prompt'],
                 'category_id' => $categoryId,
-                'language' => $row['language'],
                 'status' => $row['status'],
             ]);
             $insertCount++;
@@ -207,10 +206,6 @@ class PromptController extends Controller
             $query->where('category_id', $request->category);
         }
 
-        // Filter by language
-        if ($request->has('language') && $request->language != '') {
-            $query->where('language', $request->language);
-        }
 
         // Filter by rating
         if ($request->has('rating') && $request->rating != '') {
@@ -240,11 +235,11 @@ class PromptController extends Controller
         $categories = Category::all();
 
         // Fetch Languages
-        $languages = Language::all();
+        // $languages = Language::all();
 
         $tags = Tag::all();
         // Pass the original request to retain filter selections
-        return view('prompts.search', compact('prompts', 'categories','languages', 'tags', 'request'));
+        return view('prompts.search', compact('prompts', 'categories', 'tags', 'request'));
     }
 
     // Helper Method for Syncing Tags

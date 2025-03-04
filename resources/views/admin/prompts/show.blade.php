@@ -37,15 +37,7 @@
                             </select>
 
                         </div>
-                        <div class="mb-3">
-                            <label for="language" class="form-label">Language</label>
-                            <select class="form-select mb-3" name="language" disabled>
-                                <option selected>Choose A Language</option>
-                                @foreach ($languages as $language)
-                                <option value="{{ $language->language_name }}" {{ $prompt->language == $language->language_name ? "Selected" : "" ; }}>{{ $language->language_name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
+                        
                         <div class="mb-3">
                             <label for="status" class="form-label">Status</label>
                             <select class="form-select mb-3" name="status" disabled>

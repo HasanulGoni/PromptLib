@@ -5,7 +5,7 @@
                 <div class="bg-secondary rounded h-100 p-4">
                     <form method="GET" action="{{ route('prompts.search') }}">
                         <div class="row">
-                            <div class="col-md-3">
+                            <div class="col-md-5">
                                 <input type="text" name="keywords" class="form-control" placeholder="Search by keywords" value="{{ request('keywords') }}">
                             </div>
                             <div class="col-md-2">
@@ -28,15 +28,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="col-md-2">
-                                <select name="language" class="form-control">
-                                    <option value="">Select Language</option>
-                                    @foreach ($languages as $lang)
-                                        <option value="{{ $lang->language_name }}" {{ request('language') == $lang->language_name ? 'selected' : '' }}>{{ $lang->language_name }}</option>
-                                    @endforeach
-                                    <!-- Add other languages -->
-                                </select>
-                            </div>
+                            
                             <div class="col-md-2">
                                 <select name="sort_by" class="form-control">
                                     <option value="">Sort By</option>
@@ -64,7 +56,7 @@
                         <th>Prompt</th>
                         <th>Tags</th>
                         <th>Category</th>
-                        <th>Language</th>
+                        {{-- <th>Language</th> --}}
                         <th>Rating</th>
                     </tr>
                 </thead>
@@ -80,7 +72,7 @@
                                 {{ implode(', ', array_column($prompt->toArray()['tags'], 'name')) }}
                             </td>
                             <td>{{ $prompt->category->name ?? 'N/A' }}</td>
-                            <td>{{ $prompt->language }}</td>
+                            {{-- <td>{{ $prompt->language }}</td> --}}
                             <td>{{ $prompt->rating }}</td>
                         </tr>
                         
