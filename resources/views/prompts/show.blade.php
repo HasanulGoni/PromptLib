@@ -2,6 +2,10 @@
     @push('styles')
     <link rel="stylesheet" href="{{ asset('css/rating.css') }}">
     @endpush
+
+    @push('script')
+        <script src="{{ asset('js/prompts/show.js')}}"></script>
+    @endpush
     <div class="container-fluid pt-4 px-4">
         <div class="bg-secondary rounded h-100 p-4">
             <h2 class="mb-2">Prompt Details</h2>
@@ -33,32 +37,40 @@
             <div>
                 <div class="navbar">
                     <h6>Prompt Text</h6>
-                        @if(auth()->user()->savedPrompts()->where('prompt_id', $prompt->id)->exists())
-                        <form action="{{ route('prompts.remove', $prompt)}}" method="post">
-                            @csrf
-                            <button class="btn btn-danger">Unsave</button>
-                        </form>
-                            
-                        @else
-                         
-                        <form action="{{ route('prompts.save', $prompt)}}" method="post">
-                            @csrf
-                            <button class="btn btn-outline-info">Save</button>
-                        </form>
-                        @endif
-                    
-
+                        <button class="btn btn-light" id="copyButton">Copy</button>
                 </div>
                 <div>
-                    <form action="{{ route('prompts.sendToAI') }}" method="POST" class="mb-4">
+                    <form action="{{ route('prompts.sendToAI') }}" method="POST" class="mb-4" id="sendToAIForm">
                         @csrf
                     <label class="text-info" for="custom_prompt">You Can The Customize Prompt Before Send To AI (Optional):</label>
                     <textarea name="custom_prompt" id="custom_prompt" class="form-control bg-white">{{ $prompt->prompt_text }}
                     </textarea>
-                    <button type="submit" class="btn btn-primary mt-2">Send to AI</button>
+                    
                     </form>
                     {{-- Send To AI Model --}}
-                   
+                   <div class="d-flex">
+                        <div>
+                            <button type="submit" class="btn btn-primary" id="sendToAIBtn">Send to AI</button>
+                        </div>
+                        <div class="mx-1">
+                            @if(auth()->user()->savedPrompts()->where('prompt_id', $prompt->id)->exists())
+                            <form action="{{ route('prompts.remove', $prompt)}}" method="post">
+                                @csrf
+                                <button class="btn btn-danger">Unsave</button>
+                            </form>
+                                
+                            @else
+                            
+                            <form action="{{ route('prompts.save', $prompt)}}" method="post">
+                                @csrf
+                                <button class="btn btn-info">Save</button>
+                            </form>
+                            @endif
+                        </div>
+                        <div>
+                            <button class="btn btn-warning">Translate</button>
+                        </div>
+                   </div>
 
                     @if (session('ai_response'))
                         <h5>AI Response:</h5>
