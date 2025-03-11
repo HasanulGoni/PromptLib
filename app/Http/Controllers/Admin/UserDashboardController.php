@@ -42,9 +42,9 @@ class UserDashboardController extends Controller
         }
 
         // Filter by language
-        if ($request->has('language') && $request->language != '') {
-            $savedPrompts->where('language', $request->language);
-        }
+        // if ($request->has('language') && $request->language != '') {
+        //     $savedPrompts->where('language', $request->language);
+        // }
 
         // Filter by rating
         if ($request->has('rating') && $request->rating != '') {
@@ -57,11 +57,11 @@ class UserDashboardController extends Controller
         $categories = Category::all();
 
         // Fetch Languages
-        $languages = Language::all();
+        // $languages = Language::all();
 
         $tags = Tag::all();
         // dd($prompts);
-        return view('prompts.savedPrompt', compact('prompts', 'categories','languages', 'tags', 'request'));
+        return view('prompts.savedPrompt', compact('prompts', 'categories','tags', 'request'));
     }
 
     public function reportedPrompt() {
