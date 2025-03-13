@@ -43,8 +43,8 @@
                     <form action="{{ route('prompts.sendToAI') }}" method="POST" class="mb-4" id="sendToAIForm">
                         @csrf
                     <label class="text-info" for="custom_prompt">You Can The Customize Prompt Before Send To AI (Optional):</label>
-                    <textarea name="custom_prompt" id="custom_prompt" class="form-control bg-white">{{ $prompt->prompt_text }}
-                    </textarea>
+                    
+                    <textarea name="custom_prompt" id="custom_prompt" class="form-control bg-white">{{ $prompt->prompt_text }} </textarea>
                     
                     </form>
                     {{-- Send To AI Model --}}
@@ -68,7 +68,9 @@
                             @endif
                         </div>
                         <div>
-                            <button class="btn btn-warning">Translate</button>
+                           
+                            <button class="btn btn-warning" id="translateBtn">Translate</button>
+                           
                         </div>
                    </div>
 
@@ -144,8 +146,48 @@
                 $(document).ready(function () {
                 // Form submission event
                 $('form').on('submit', function () {
-                    $('#spinner').addClass('show'); // Show the spinner when the request starts
+                    // $('#spinner').addClass('show'); // Show the spinner when the request starts
+                    $('#custom_spinner').addClass('show'); // Show the spinner when the request starts
                 });
+
+                // Translate
+                $('#translateBtn').click(function() {
+                    let prompt = $('#custom_prompt').val();
+                    console.log(prompt);
+                    $('#custom_spinner').addClass('show');
+                    let csrfToken = $('meta[name="csrf-token"]').attr('content'); // Get CSRF token
+
+                    let translateUrl = "{{ route('prompts.translate') }}"; // Get the named route url here
+
+                    $.ajax({
+                        url: translateUrl, // Use the named route url
+                        type: 'POST',
+                        dataType: 'json',
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken
+                        },
+                        data: {
+                            prompt: prompt
+                        },
+                        success: function(data) {
+                            $('#custom_spinner').removeClass('show');
+                            console.log(data);
+                            if (data.error) {
+
+                                // $('#translatedText').html('<p style="color:red;">' + data.error + '</p>');
+                            } else {
+                                $('#custom_prompt').val(data.translatedText);
+                                // $('#translatedText').html('<p>' + data.translatedText + '</p>');
+                            }
+                        },
+                        error: function() {
+                            $('#custom_spinner').removeClass('show');
+                            console.log('An unexpected error occurred.');
+                            // $('#translatedText').html('<p style="color:red;">An unexpected error occurred.</p>');
+                        }
+                    });
+                });
+        
             });
         </script>
     @endpush

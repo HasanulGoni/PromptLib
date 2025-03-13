@@ -3,6 +3,7 @@ const sendToAIForm = document.getElementById('sendToAIForm');
 const sendToAIBtn = document.getElementById('sendToAIBtn');
 
 sendToAIBtn.addEventListener('click', function() {
+  $('#custom_spinner').addClass('show');
   sendToAIForm.submit();
 });
 

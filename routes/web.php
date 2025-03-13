@@ -43,6 +43,8 @@ Route::middleware('auth')->group(function () {
     // AI integration
     Route::post('prompts/send-to-ai', [AIController::class, 'sendToAI'])->name('prompts.sendToAI');
 
+    // Treanslate
+    Route::post('prompts/translate', [PromptController::class, 'translate'])->name('prompts.translate');
     // Report Prompt
 
     Route::post('prompts/{prompt}/report', [UserDashboardController::class, 'reportPrompt'])->name('prompts.report');
@@ -57,6 +59,7 @@ Route::middleware('auth')->group(function () {
     Route::post('subscriptions/paypal/create', [PayPalSubscriptionController::class, 'createPayment'])->name('subscriptions.paypal.create');
     Route::get('subscriptions/paypal/success', [PayPalSubscriptionController::class, 'success'])->name('subscriptions.paypal.success');
     Route::get('subscriptions/paypal/cancel', [PayPalSubscriptionController::class, 'cancel'])->name('subscriptions.paypal.cancel');
+
     
 });
 

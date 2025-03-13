@@ -7,7 +7,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
-
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- Favicon -->
     <link href="img/favicon.ico" rel="icon">
 
@@ -32,6 +32,7 @@
     
     <!-- This will inject page-specific CSS -->
     @stack('styles') 
+    
 </head>
 
 <body>
@@ -43,6 +44,14 @@
             </div>
         </div>
         <!-- Spinner End -->
+
+        {{-- Custome Spinner Start --}}
+        <div id="custom_spinner" class="bg-dark position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+           
+            <img src="{{ asset('img/spinner.gif') }}" class="img img-fluid" alt="Loading AI response" srcset="">
+        
+        </div>
+        {{-- Custome Spinner End --}}
 
         <x-sidebar />
         

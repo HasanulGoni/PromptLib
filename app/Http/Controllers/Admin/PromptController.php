@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
+use OpenAI;
 use App\Models\Tag;
 use App\Models\Prompt;
 use App\Models\Category;
 use App\Models\Language;
-use Illuminate\Http\Request;
 
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -242,6 +244,34 @@ class PromptController extends Controller
         return view('prompts.search', compact('prompts', 'categories', 'tags', 'request'));
     }
 
+
+    // Translate
+    public function translate(Request $request)
+    {
+        $prompt = $request->input('prompt');
+        $language = Auth::user()->language;
+
+        try {
+            $client = OpenAI::client(env('OPENAI_API_KEY'));
+
+            $response = $client->chat()->create([
+                'model' => 'gpt-3.5-turbo', // Or another suitable model
+                'messages' => [
+                    [
+                        'role' => 'user',
+                        'content' => "Translate the following English text to $language: " . $prompt,
+                    ],
+                ],
+            ]);
+
+            $translatedText = $response->choices[0]->message->content;
+
+            return response()->json(['translatedText' => $translatedText]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Translation failed: ' . $e->getMessage()], 500);
+        }
+    }
+    
     // Helper Method for Syncing Tags
     private function syncTags($tags)
     {
