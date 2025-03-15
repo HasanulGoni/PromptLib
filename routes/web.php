@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\AdminTagController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AdminCategoryController;
 use App\Http\Controllers\Admin\UserDashboardController;
+use App\Http\Controllers\Admin\AdminSubscriptionController;
 use App\Http\Controllers\Admin\PayPalSubscriptionController;
 
 Route::get('/', function () {
@@ -75,6 +76,10 @@ Route::middleware(['auth', Admin::class])->prefix('admin')->name('admin.')->grou
     Route::get('/statistics', [AdminUserController::class, 'statistics'])->name('statistics');
 
 
+    // Enhance Subscription Management
+    Route::get('admin/subscriptions', [AdminSubscriptionController::class, 'index'])->name('subscriptions.index');
+    Route::post('admin/subscriptions/{user}/update', [AdminSubscriptionController::class, 'update'])->name('subscriptions.update');
+    Route::post('admin/subscriptions/{user}/cancel', [AdminSubscriptionController::class, 'cancel'])->name('subscriptions.cancel');
 
 });
 
