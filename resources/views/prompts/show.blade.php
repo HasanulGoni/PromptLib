@@ -76,7 +76,11 @@
 
                     @if (session('ai_response'))
                         <h5>AI Response:</h5>
-                        <pre><p style="white-space: pre-wrap; word-wrap: break-word; overflow-wrap: break-word;">{{ session('ai_response') }}</p></pre>
+                        <pre><p id="ai-response" style="white-space: pre-wrap; word-wrap: break-word; overflow-wrap: break-word;">{{ session('ai_response') }}</p></pre>
+
+                        <button class="btn btn-danger mt-2" onclick="downloadFile('pdf')">Download as PDF</button>
+                        <button class="btn btn-primary mt-2" onclick="downloadFile('doc')">Download as DOC</button>
+                    
                     @endif
 
 
@@ -189,6 +193,32 @@
                 });
         
             });
+
+            // Download AI Response
+            function downloadFile(type) {
+                let aiResponse = document.getElementById('ai-response').innerText;
+
+                let form = document.createElement('form');
+                form.method = 'POST';
+                form.action = type === 'pdf' ? "{{ route('ai.download.pdf') }}" : "{{ route('ai.download.doc') }}";
+                form.style.display = 'none';
+
+                let csrf = document.createElement('input');
+                csrf.type = 'hidden';
+                csrf.name = '_token';
+                csrf.value = "{{ csrf_token() }}";
+                form.appendChild(csrf);
+
+                let responseInput = document.createElement('input');
+                responseInput.type = 'hidden';
+                responseInput.name = 'ai_response';
+                responseInput.value = aiResponse;
+                form.appendChild(responseInput);
+
+                document.body.appendChild(form);
+                form.submit();
+                document.body.removeChild(form);
+            }
         </script>
     @endpush
 

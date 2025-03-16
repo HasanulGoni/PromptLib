@@ -54,6 +54,10 @@ Route::middleware('auth')->group(function () {
     Route::post('prompts/{prompt}/review', [ReviewController::class, 'store'])->name('prompts.review');
     Route::delete('reviews/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
 
+    // Download Prompt
+    Route::post('ai-response/download/pdf', [AIController::class, 'downloadPDF'])->name('ai.download.pdf');
+    Route::post('ai-response/download/doc', [AIController::class, 'downloadDOC'])->name('ai.download.doc');
+
 
     // Paypal
     Route::get('subscriptions/paypal', [PayPalSubscriptionController::class, 'showPlans'])->name('subscriptions.paypal.plans');

@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use OpenAI;
 use App\Models\Prompt;
 use Illuminate\Http\Request;
+use PhpOffice\PhpWord\PhpWord;
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
@@ -44,4 +46,46 @@ class AIController extends Controller
             return back()->withErrors(['error' => 'Failed to generate AI response.']);
         }
     }
+
+
+    // Download AI Response as PDF
+    public function downloadPDF(Request $request)
+    {
+        // Get AI response from request instead of session
+        $aiResponse = $request->ai_response;
+        if (!$aiResponse) {
+            return back()->withErrors(['error' => 'No AI response found to download.']);
+        }
+    
+        $pdf = Pdf::loadView('ai.pdf', compact('aiResponse'));
+        return $pdf->download('AI_Response.pdf');
+    }
+    
+    public function downloadDOC(Request $request)
+    {
+        // Get AI response from request instead of session
+        $aiResponse = $request->ai_response;
+        if (!$aiResponse) {
+            return back()->withErrors(['error' => 'No AI response found to download.']);
+        }
+    
+        $phpWord = new \PhpOffice\PhpWord\PhpWord();
+        $section = $phpWord->addSection();
+    
+        // Add the heading
+        $headingStyle = ['bold' => true, 'italic' => true, 'size' => 14, 'color' => '808080'];
+        $section->addText("This Response Is Powered By PromptLib.", $headingStyle, ['alignment' => 'center']);
+        $section->addTextBreak(1); // Add some spacing
+    
+        // Add AI Response
+        $section->addText($aiResponse);
+    
+        // Save and download the DOC file
+        $tempFile = tempnam(sys_get_temp_dir(), 'AI_Response') . '.docx';
+        $writer = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
+        $writer->save($tempFile);
+    
+        return response()->download($tempFile, 'AI_Response.docx')->deleteFileAfterSend(true);
+    }
+    
 }
