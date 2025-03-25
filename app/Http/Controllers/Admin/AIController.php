@@ -72,13 +72,25 @@ class AIController extends Controller
         $phpWord = new \PhpOffice\PhpWord\PhpWord();
         $section = $phpWord->addSection();
     
-        // Add the heading
+        // Add heading
         $headingStyle = ['bold' => true, 'italic' => true, 'size' => 14, 'color' => '808080'];
         $section->addText("This Response Is Powered By PromptLib.", $headingStyle, ['alignment' => 'center']);
-        $section->addTextBreak(1); // Add some spacing
+        $section->addTextBreak(1); // Add spacing
     
-        // Add AI Response
-        $section->addText($aiResponse);
+        // Convert AI response into an array of lines and ensure correct line breaks
+        $lines = explode("\n", trim($aiResponse));
+        $firstLine = true; // Track the first paragraph
+    
+        foreach ($lines as $line) {
+            $line = trim($line); // Remove unnecessary spaces
+            if (!empty($line)) {
+                if (!$firstLine) {
+                    $section->addTextBreak(1); // Add a line break *before* each paragraph (except the first)
+                }
+                $section->addText($line);
+                $firstLine = false;
+            }
+        }
     
         // Save and download the DOC file
         $tempFile = tempnam(sys_get_temp_dir(), 'AI_Response') . '.docx';
@@ -87,5 +99,7 @@ class AIController extends Controller
     
         return response()->download($tempFile, 'AI_Response.docx')->deleteFileAfterSend(true);
     }
+    
+    
     
 }
